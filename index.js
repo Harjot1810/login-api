@@ -1,9 +1,11 @@
 const User = require('./models/user');
 const { auth } = require('./middlewares/auth');
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const Twilio = require('twilio');
 const db = require('./config/config').get(process.env.NODE_ENV);
 
 require('dotenv').config();
@@ -14,6 +16,11 @@ const app = express();
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 app.use(cookieParser());
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000',
+
+}));
 
 // database connection
 mongoose.Promise = global.Promise;
@@ -28,7 +35,7 @@ app.get('/', function (req, res) {
 });
 
 // listening port
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`app is live at ${PORT}`);
 });
@@ -133,10 +140,9 @@ app.get('/api/token', auth, function (req, res) {
     });
 
     token.addGrant(voiceGrant);
-    console.log(twilioApiKey);
+    //console.log(twilioApiKey);
     res.json({
         accessToken: token.toJwt(),
-        twilioApiKey: twilioApiKey,
     })
 
 })

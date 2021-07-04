@@ -109,7 +109,7 @@ app.get('/api/token', auth, function (req, res) {
     const twilioAccountSid = process.env.ACCOUNT_SID;
     const twilioApiKey = process.env.API_KEY;
     const twilioApiSecret = process.env.API_SECRET;
-    const identity = req.user._id;
+    const identity = req.user.firstname + req.user.lastname;
 
     const AccessToken = Twilio.jwt.AccessToken;
 

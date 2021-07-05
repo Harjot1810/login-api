@@ -45,10 +45,10 @@ app.post('/api/register', function (req, res) {
     // taking a user
     const newuser = new User(req.body);
 
-    if (newuser.password != newuser.password2) return res.status(400).json({ message: "password not match" });
+    if (newuser.password != newuser.password2) return res.json({ auth: false, message: "Password does not match" });
 
     User.findOne({ email: newuser.email }, function (err, user) {
-        if (user) return res.status(400).json({ auth: false, message: "email exists" });
+        if (user) return res.json({ auth: false, message: "Email already exists" });
 
         newuser.save((err, doc) => {
             if (err) {
@@ -75,10 +75,10 @@ app.post('/api/login', function (req, res) {
 
         else {
             User.findOne({ 'email': req.body.email }, function (err, user) {
-                if (!user) return res.json({ isAuth: false, message: ' Auth failed ,email not found' });
+                if (!user) return res.json({ isAuth: false, message: ' Email not found' });
 
                 user.comparepassword(req.body.password, (err, isMatch) => {
-                    if (!isMatch) return res.json({ isAuth: false, message: "password doesn't match" });
+                    if (!isMatch) return res.json({ isAuth: false, message: "Password is incorrect" });
 
                     user.generateToken((err, user) => {
                         if (err) return res.status(400).send(err);

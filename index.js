@@ -81,6 +81,7 @@ app.post('/api/login', function (req, res) {
                     if (!isMatch) return res.json({ isAuth: false, message: "Password is incorrect" });
 
                     user.generateToken((err, user) => {
+                        console.log(err);
                         if (err) return res.status(400).send(err);
                         res.cookie('auth', user.token).json({
                             isAuth: true,
@@ -92,6 +93,42 @@ app.post('/api/login', function (req, res) {
             });
         }
     });
+});
+
+app.post('/api/chat', function (req, res) {
+    const newroom = new Chat(req.body);
+    Chat.findOne({ room: newroom.roomName }, function (err, room) {
+        if (room) {
+            const newmessage = new Message(req.body);
+            newmessage.save((err, doc) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).json({ success: false });
+                }
+                res.status(200).json({
+                    success: true,
+                    message: doc
+                });
+            });
+
+            newroom.save((err, doc) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).json({ success: false });
+                }
+                res.status(200).json({
+                    success: true,
+                    chat: doc
+                });
+            });
+
+        }
+    });
+});
+
+app.get('/api/msgwebhook', function (req, res) {
+    console.log(req.body);
+    res.status(200).send();
 });
 
 // get logged in user
@@ -140,7 +177,7 @@ app.get('/api/token', auth, function (req, res) {
     });
 
     token.addGrant(voiceGrant);
-    //console.log(twilioApiKey);
+
     res.json({
         accessToken: token.toJwt(),
     })

@@ -63,6 +63,22 @@ app.post('/api/register', function (req, res) {
     });
 });
 
+app.put('/api/addchannel', function (req, res) {
+    //const newchannel = new Channel(req.body);
+    User.updateOne(
+        { name: req.body.name },
+        { $addToSet: { channels: req.body.channels } },
+        function (err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send(result);
+            }
+        }
+    );
+
+});
+
 // login user
 app.post('/api/login', function (req, res) {
     let token = req.cookies.auth;
@@ -95,38 +111,8 @@ app.post('/api/login', function (req, res) {
     });
 });
 
-app.post('/api/chat', function (req, res) {
-    const newroom = new Chat(req.body);
-    Chat.findOne({ room: newroom.roomName }, function (err, room) {
-        if (room) {
-            const newmessage = new Message(req.body);
-            newmessage.save((err, doc) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(400).json({ success: false });
-                }
-                res.status(200).json({
-                    success: true,
-                    message: doc
-                });
-            });
 
-            newroom.save((err, doc) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(400).json({ success: false });
-                }
-                res.status(200).json({
-                    success: true,
-                    chat: doc
-                });
-            });
-
-        }
-    });
-});
-
-app.get('/api/msgwebhook', function (req, res) {
+app.post('/api/msgwebhook', function (req, res) {
     console.log(req.body);
     res.status(200).send();
 });
@@ -137,7 +123,8 @@ app.get('/api/profile', auth, function (req, res) {
         isAuth: true,
         id: req.user._id,
         email: req.user.email,
-        name: req.user.firstname + req.user.lastname
+        name: req.user.firstname + " " + req.user.lastname,
+        channels: req.user.channels
 
     })
 });
@@ -146,7 +133,7 @@ app.get('/api/token', auth, function (req, res) {
     const twilioAccountSid = process.env.ACCOUNT_SID;
     const twilioApiKey = process.env.API_KEY;
     const twilioApiSecret = process.env.API_SECRET;
-    const identity = req.user.firstname + req.user.lastname;
+    const identity = req.user.firstname + " " + req.user.lastname;
 
     const AccessToken = Twilio.jwt.AccessToken;
 

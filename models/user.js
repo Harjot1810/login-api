@@ -35,35 +35,11 @@ const userSchema = mongoose.Schema({
     token: {
         type: String
     },
-    chats: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Chat"
+    channels: [{
+        type: String,
     }]
 
 });
-
-const ChatSchema = mongoose.Schema({
-    room: {
-        type: String
-    },
-    /*participants:{
-        type:[User]
-    },*/
-    messages: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Message"
-    }],
-});
-
-const MessageSchema = mongoose.Schema({
-    identity: {
-        type: String
-    },
-    message: {
-        type: String
-    }
-});
-
 
 userSchema.pre('save', function (next) {
     var user = this;
@@ -128,6 +104,13 @@ userSchema.methods.deleteToken = function (token, cb) {
         cb(null, user);
     })
 }
+
+//add channel
+
+/*userSchema.methods.addChannel=function(token,cb){
+    var user=this;
+    user.
+}*/
 
 module.exports = mongoose.model('User', userSchema);
 

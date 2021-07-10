@@ -129,6 +129,7 @@ app.get('/api/profile', auth, function (req, res) {
     })
 });
 
+//add token
 app.get('/api/token', auth, function (req, res) {
     const twilioAccountSid = process.env.ACCOUNT_SID;
     const twilioApiKey = process.env.API_KEY;

@@ -63,22 +63,6 @@ app.post('/api/register', function (req, res) {
     });
 });
 
-app.put('/api/addchannel', function (req, res) {
-    //const newchannel = new Channel(req.body);
-    User.updateOne(
-        { name: req.body.name },
-        { $addToSet: { channels: req.body.channels } },
-        function (err, result) {
-            if (err) {
-                res.send(err);
-            } else {
-                res.send(result);
-            }
-        }
-    );
-
-});
-
 // login user
 app.post('/api/login', function (req, res) {
     let token = req.cookies.auth;
@@ -98,7 +82,7 @@ app.post('/api/login', function (req, res) {
 
                     user.generateToken((err, user) => {
                         console.log(err);
-                        if (err) return res.status(400).send(err);
+                        if (err) return res.status(400).json({ isAuth: false, message: "Unexpected Error! Try again" });
                         res.cookie('auth', user.token, { sameSite: "none", secure: true }).json({
                             isAuth: true,
                             id: user._id

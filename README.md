@@ -7,4 +7,5 @@ How to run
 ->Run the following commands in project directory:
     
 npm install
+
 nodemon

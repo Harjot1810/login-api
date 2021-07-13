@@ -1,11 +1,18 @@
 # Backend
 
-How to run
+### Hosted Backend URL
 
-->Make a .env file from .env.example and fill in the credentials
+Hosted on Heroku :
+<https://back-clone.herokuapp.com>
 
-->Run the following commands in project directory:
+---
+
+### How to run
+
+-> Make a .env file from .env.example and fill in the credentials
+
+-> Run the following commands in project directory:
     
-npm install
+- npm install
 
-nodemon
+- nodemon
